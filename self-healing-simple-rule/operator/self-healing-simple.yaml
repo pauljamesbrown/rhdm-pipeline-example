@@ -1,0 +1,19 @@
+
+  
+apiVersion: app.kiegroup.org/v1beta1
+kind: KogitoBuild
+metadata:
+  name: self-healing-infra-simple
+spec:
+  buildImage: quay.io/kiegroup/kogito-builder:latest
+  runtimeImage: quay.io/kiegroup/kogito-runtime-jvm:latest
+  type: LocalSource
+ 
+---
+apiVersion: app.kiegroup.org/v1beta1
+kind: KogitoRuntime
+metadata:
+  name: self-healing-infra-simple
+spec:
+  infra:
+    - KAFKA_INFRA_NAME
