@@ -1,0 +1,114 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_75307D32-69DE-4C81-8916-E91BF3B10B4A" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_445703C8-2DFE-4808-94B7-4589D91C6015" name="self-healing-simple" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_75307D32-69DE-4C81-8916-E91BF3B10B4A">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_36C3AE86-0742-48E3-9692-EBDD5B02CD36" name="alert" isCollection="false">
+    <dmn:itemComponent id="_0FCEC2A9-A7E3-4CA1-BBAC-7501D8282A1B" name="alertName" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_5129C23C-037D-45DB-8B62-403BC10EB881" name="alertLevel" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+      <dmn:allowedValues kie:constraintType="enumeration" id="_0AD1C585-7794-41FA-BE3D-0019F7EF7CDC">
+        <dmn:text>"High", "Medium", "Low"</dmn:text>
+      </dmn:allowedValues>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_B6680C49-0896-4D90-8908-59F7BB9BD51A" name="infraData">
+    <dmn:extensionElements/>
+    <dmn:variable id="_46FBA04A-4E05-4831-BA62-ED8BEA56DC31" name="infraData" typeRef="alert"/>
+  </dmn:inputData>
+  <dmn:decision id="_0DBA16B9-9842-41AF-8463-AFB37E8670F2" name="Action">
+    <dmn:extensionElements/>
+    <dmn:variable id="_9455E25F-DD30-4A0D-889B-7CEB5E2C6637" name="Action" typeRef="string"/>
+    <dmn:informationRequirement id="_704A3E00-9A48-4447-96D1-4CEAA797398C">
+      <dmn:requiredInput href="#_B6680C49-0896-4D90-8908-59F7BB9BD51A"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_C365A587-402F-4BD5-9428-AEF5E6AA095B" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_56DD21F8-A6E5-4821-818C-974B671F818B">
+        <dmn:inputExpression id="_6109B5B9-D095-4DDC-A6F9-2C71F7D6474F" typeRef="string">
+          <dmn:text>infraData.alertLevel</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_FA4D7484-88BD-454E-A28A-512832875790"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_B50C29AB-7AA4-4A03-AC99-2CFE9BA9D46D">
+        <dmn:inputEntry id="_CB44EE9F-B330-405C-95B9-D509E661BE9E">
+          <dmn:text>"Low"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_1B57EB82-49D6-4716-8F73-5A554A41A4DC">
+          <dmn:text>"Do Nothing"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_17C696A5-FC98-4022-93E5-A5A1C8DF56A1">
+        <dmn:inputEntry id="_2A6A6041-5AAE-453F-87A2-025052375877">
+          <dmn:text>"Medium"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_6D505CA5-1FCB-4B8C-9DC9-5D1EDB2D9A21">
+          <dmn:text>"Check Health"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_4C190132-6CBE-4607-9CAA-5E93A744BE3D">
+        <dmn:inputEntry id="_6604DD72-CCA0-43AC-BD57-C816BD26D022">
+          <dmn:text>"High"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_B646D287-67C0-411C-BEEC-538F3CDE2655">
+          <dmn:text>"Restart App"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_6CC977DE-625A-42CF-BA08-795B2F68440C">
+        <dmn:inputEntry id="_1B2A6347-7E09-4EB1-8BAB-5EA956059C53">
+          <dmn:text>""</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_971E756B-E02A-454E-8F50-C05316DEC12F">
+          <dmn:text>"No Alert Provided"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_F4D2A879-BA5B-4C12-B0A2-ABAE46EF2CF6" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_C365A587-402F-4BD5-9428-AEF5E6AA095B">
+            <kie:width>50</kie:width>
+            <kie:width>250</kie:width>
+            <kie:width>179</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_B6680C49-0896-4D90-8908-59F7BB9BD51A" dmnElementRef="_B6680C49-0896-4D90-8908-59F7BB9BD51A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="209" y="182" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_0DBA16B9-9842-41AF-8463-AFB37E8670F2" dmnElementRef="_0DBA16B9-9842-41AF-8463-AFB37E8670F2" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="209" y="52" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_704A3E00-9A48-4447-96D1-4CEAA797398C-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="_704A3E00-9A48-4447-96D1-4CEAA797398C">
+        <di:waypoint x="259" y="182"/>
+        <di:waypoint x="259" y="102"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
