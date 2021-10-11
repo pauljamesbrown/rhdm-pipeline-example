@@ -53,7 +53,7 @@
           <factAlias>infraData</factAlias>
           <expressionAlias>alertLevel</expressionAlias>
           <genericTypes/>
-          <columnWidth>114</columnWidth>
+          <columnWidth>316.5</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
         <FactMapping>
@@ -74,7 +74,7 @@
           <factAlias>Action</factAlias>
           <expressionAlias>value</expressionAlias>
           <genericTypes/>
-          <columnWidth>114</columnWidth>
+          <columnWidth>316.5</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>
@@ -101,7 +101,7 @@
               <name>1|1</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"low"</rawValue>
+            <rawValue class="string">"Low"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -148,7 +148,7 @@
               <name>1|1</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"medium"</rawValue>
+            <rawValue class="string">"Medium"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -195,7 +195,7 @@
               <name>1|1</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"high"</rawValue>
+            <rawValue class="string">"High"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -239,7 +239,7 @@
           <className>java.lang.Void</className>
           <factAlias>INSTANCE 1</factAlias>
           <expressionAlias>PROPERTY 1</expressionAlias>
-          <columnWidth>114</columnWidth>
+          <columnWidth>1455</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>
@@ -262,7 +262,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>self-healing-simple/src/main/resources/self-healing-simple.dmn</dmnFilePath>
+    <dmnFilePath>self-healing-simple-rule/src/main/resources/self-healing-simple.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_75307D32-69DE-4C81-8916-E91BF3B10B4A</dmnNamespace>
     <dmnName>self-healing-simple</dmnName>
