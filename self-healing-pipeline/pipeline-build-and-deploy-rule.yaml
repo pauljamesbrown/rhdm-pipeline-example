@@ -1,28 +1,28 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: build-and-deploy-quarkus-application
+  name: build-and-deploy-rule-application
 spec:
   params:
   - name: OCP_USER
     type: string
-    description: OCP_USER of the student
+    description: OCP_USER PREFIX
     default: 888c4
   - name: APP_NAME
     type: string
     description: The application deployment name
-    default: simple-rule-example
+    default: self-healing-simple-rule
   - name: SOURCE_GIT_URL
     type: string
     description: The application git repository url
-    default: https://github.com/redhat-gpte-devopsautomation/coffee-shop-source
+    default: https://github.com/pauljamesbrown/rhdm-pipeline-example
   - name: SOURCE_GIT_REVISION
     type: string
     default: master
     description: The application git repository revision
   - name: SOURCE_GIT_CONTEXT_DIR
     type: string
-    default: coffee-shop
+    default: self-healing-simple-rule
     description: The subdirectory in the git repository
   - name: KUSTOMIZE_GIT_URL
     type: string
@@ -34,7 +34,7 @@ spec:
     description: The kustomize git repository revision
   - name: KUSTOMIZE_GIT_CONTEXT_DIR
     type: string
-    default: coffee-shop-kustomize/coffee-shop
+  # default: coffee-shop-kustomize/coffee-shop
     description: The subdirectory in the kustomize git repository
   - name: KUSTOMIZE_GIT_FILE_NAME
     type: string
@@ -47,11 +47,11 @@ spec:
   - name: NEXUS_REGISTRY_URL
     type: string
     description: External URL for the container registry to set the production image from
-    default: homework-nexus-registry.apps.shared-dev4.dev4.openshift.opentlc.com
+  # default: homework-nexus-registry.apps.shared-dev4.dev4.openshift.opentlc.com
   - name: NAMESPACE_DEV
     type: string
     description: Namespace where the buildconfig is located
-    default: 888c4-dev-coffeeshop
+    default: 888c4-dev-rhdm-simple-rule
   - name: DEPLOY_SERVERLESS
     type: string 
     description: OCP_USER of the student
