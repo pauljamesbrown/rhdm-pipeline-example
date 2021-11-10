@@ -55,15 +55,19 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-event-driven-decisions-quarkus-addon</artifactId>
-     </dependency>
-     <dependency>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-     </dependency>
-     <dependency>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-scenario-simulation</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-container-image-docker</artifactId>
     </dependency>
   </dependencies>
   <repositories>
@@ -96,13 +100,6 @@
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
         <version>${quarkus-plugin.version}</version>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <maven.home>${maven.home}</maven.home>
-            <testSourceDirectory>${basedir}/src/test/testscenario</testSourceDirectory>
-          </systemPropertyVariables>
-        </configuration>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -113,6 +110,13 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <maven.home>${maven.home}</maven.home>
+            <testSourceDirectory>${basedir}/src/test/testscenario</testSourceDirectory>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
