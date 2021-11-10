@@ -174,17 +174,19 @@ oc expose svc <build-name>
 ```
 10. Now, test your service
 
-## Turn Rule into a Serverless Component
--- We need to use the image tag from the previous step.
+## Now Turn the Simple Rule into a Serverless Component.
+   
+Note: We need to use the image tag from the previous step.
 
 1. Use the same namespace as used in the previous deployment steps.
 
-2. Deploy your rule services container image as a serverless service
-    a. Use the previously created image from your development project:
-    b. Set the labels for: 
-        - app.openshift.io/runtime=quarkus
-        - app.kubernetes.io/part-of=simple-dmn-rule-rule
-    c. Deploy the service as a no-cluster-local service which means that the service is not specified as private and is publicly available outside of the OpenShift cluster. (--no-cluster-local will make the service publicly available this is the - default)
+2. Deploy your rule services container image as a serverless service 
+    1. Use the previously created image from your development project: 
+    2. Set the labels for: 
+        - app.openshift.io/runtime=quarkus 
+        - app.kubernetes.io/part-of=simple-dmn-rule-rule 
+   
+    3. Deploy the service as a no-cluster-local service which means that the service is not specified as private and is publicly available outside of the OpenShift cluster. (--no-cluster-local will make the service publicly available this is the - default) +
     
     ```
     kn service create simple-dmn-rule --image <project>/<image-name>:<image-tag> --label app.openshift.io/runtime=quarkus --label app.kubernetes.io/part-of=simple-dmn-rule --port 8080 --no-cluster-local --request cpu=100m, memory=256mi -n <your namespace>
