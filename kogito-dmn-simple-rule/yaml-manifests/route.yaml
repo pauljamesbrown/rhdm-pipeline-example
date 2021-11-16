@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  labels:
+    app: kogito-dmn-simple
+    app.kubernetes.io/component: kogito-dmn-simple
+    app.kubernetes.io/instance: kogito-dmn-simple
+  name: kogito-dmn-simple
+  namespace: pbrown-dev
+spec:
+  host: kogito-dmn-simple-pbrown-dev.apps.sandbox.x8i5.p1.openshiftapps.com
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: kogito-dmn-simple
+    weight: 100
+  wildcardPolicy: None

@@ -24,15 +24,9 @@ spec:
       maxUnavailable: 25%
     type: RollingUpdate
   template:
-    metadata:
-      annotations:
-        openshift.io/generated-by: OpenShiftNewApp
-      creationTimestamp: null
-      labels:
-        deployment: kogito-dmn-simple
     spec:
       containers:
-      - image: image-registry.openshift-image-registry.svc:5000/pbrown-dev/kogito-dmn-simple@sha256:cb89d9d3dc170e6cbad3a92ac472d6d56bbc0f615bd173be5760b2a2769cce24
+      - image: <PATCH_ME> 
         imagePullPolicy: IfNotPresent
         name: kogito-dmn-simple
         ports:
