@@ -199,19 +199,19 @@ Note: We need to use the image tag from the previous step.
 4. Check that everything is working ok
 
 
-## Argo CD Time.
+## Argo CD, Kustomise & Tekton.
 
 1. Create YAML manifest for all of the application components 
         a. Get all of the resources required
             ```
             oc get all --selector build=simple-dmn-docker-native
             ```
-# Install Operators
+### Overview
+* Prereqs - Ensure the simple dmn application is deployed and working.
+* To use kustimise we need to create YAML Manifests from deployed applications
+* When the need to build the Re-create the application from YAML Manifests to test
 
-* Prereqs
-* Need to create YAML Manifests from deployed applications
-* Re-create the application from YAML Manifests to test
-
+#### Steps :
   * Make the following directories
 
     * simple-rule-yaml
@@ -239,11 +239,50 @@ Note: We need to use the image tag from the previous step.
     * Use oc get buildconfig simple-rule -o yaml -n `<namespace> | oc neat > buildconfig.yaml`
     * Use oc get `service.serving.knative.dev simple-rule -o yaml -n <namespace>` | oc neat > knative-service.yaml
 * ~~Protect credentials by converting secrets to sealed secrets~~
-* Set-up new project
 
-  * oc apply -n `<namespace> -f knative-service.yaml`
-  * oc apply -n `<namespace> -f config-map.yaml`
-* Store YAML Manifests in a repository
+#### The Kustomize Part
+Create the Kustomize files:
+* Create the folllowing directory structure
+- Copy the yaml files across
+- Edit the deployment.yaml
+        - Remove the entire .spec.template.metatdata section
+        - Change the spec.template.spec.image to <PATCH_ME>
+- Create a kustomization.yaml file in the base directory 
+    - kustomize create --autodetect --labels app:kogito-dmn-simple
+- Test your base kustomization
+    - Customise build . 
+- Create the development directory
+- Create a kutomization.yaml file <include example>
+- Create a development-patches.yaml file
+- Populate the development-patches.yaml file https://kustomize.io/tutorial
+- Test your base kustomization
+    - Customise build . 
+
+- Create the production directory
+- Create a knative-serivce-patches.yaml file
+- Populate the knative-serivce-patches.yaml.yaml file https://kustomize.io/tutorial
+- Create a kutomization.yaml file <include example> for the 
+- Test your base kustomization
+    - Customise build . 
+
+#### Tekton Pipeline Part:
+
+**Invoking the pipe line**
+
+tkn pipeline start build-and-deploy-quarkus-application \
+    --use-param-defaults \
+    --param DEPLOY_SERVERLESS=false \
+    --param APP_NAME=coffee-shop \
+    --param SOURCE_GIT_CONTEXT_DIR=coffee-shop \
+    --param KUSTOMIZE_GIT_CONTEXT_DIR=coffee-shop-kustomize/coffee-shop \
+    --param KUSTOMIZE_GIT_FILE_NAME=overlays/production/deployment-patches.yaml \
+    --workspace name=app-source,claimName=workspace-pvc \
+    --workspace name=maven-settings,emptyDir= \
+    --workspace name=images-url,emptyDir= \
+    --pod-template=$HOME/coffee-shop-final-lab/coffee-shop-pipeline/pod-template.yaml \
+    --showlog \
+    -n ${PREFIX}-pipeline
+
 
 Red Hat Openshift GitOps
 

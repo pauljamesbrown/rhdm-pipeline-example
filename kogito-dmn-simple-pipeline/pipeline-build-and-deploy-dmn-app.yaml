@@ -1,0 +1,107 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-and-deploy-quarkus-application
+spec:
+  params:
+  - name: APP_NAME
+    type: string
+    description: The application deployment name
+    default: simple-dmn-rule
+
+  - name: SOURCE_GIT_URL
+    type: string
+    description: The application git repository url
+    default: https://github.com/redhat-gpte-devopsautomation/coffee-shop-source
+
+  - name: SOURCE_GIT_REVISION
+    type: string
+    default: master
+    description: The application git repository revision
+  
+  - name: SOURCE_GIT_CONTEXT_DIR
+    type: string
+    default: coffee-shop
+    description: The subdirectory in the git repository
+
+  - name: KUSTOMIZE_GIT_URL
+    type: string
+    description: The kustomize git repository url
+    default: http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+
+  - name: KUSTOMIZE_GIT_REVISION
+    type: string
+    default: master
+    description: The kustomize git repository revision
+
+  - name: KUSTOMIZE_GIT_CONTEXT_DIR
+    type: string
+    default: NEED TO UPDATE - coffee-shop-kustomize/coffee-shop
+    description: The subdirectory in the kustomize git repository
+
+  - name: KUSTOMIZE_GIT_FILE_NAME
+    type: string
+    default: overlays/production/deployment-patches.yaml
+    description: The YAML file in which to patch the image
+
+  - name: NAMESPACE_DEV
+    type: string
+    description: Namespace where the buildconfig is located
+    default: dev-simple-dmn
+  
+  results:
+  - name: image-tag
+    description: The Production Image Tag
+    value: prod-$(tasks.generate-tag.results.image-tag)
+
+  workspaces:
+  - name: app-source
+  - name: maven-settings
+  - name: images-url
+  tasks:
+
+  - name: git-clone
+    taskRef:
+      kind: ClusterTask
+      name: git-clone
+    params:
+    - name: url
+      value: $(params.SOURCE_GIT_URL)
+    - name: revision
+      value: $(params.SOURCE_GIT_REVISION)
+    - name: deleteExisting
+      value: 'true'
+    workspaces:
+    - name: output
+      workspace: app-source
+
+  - name: generate-tag
+    taskRef:
+      kind: Task
+      name: generate-tag
+
+  - name: maven-build
+    runAfter:
+    - git-clone
+    - generate-tag
+    taskRef:
+      kind: Task
+      name: maven
+    params:
+    - name: MAVEN_IMAGE
+      value: registry.access.redhat.com/ubi8/openjdk-11:1.3
+    - name: CONTEXT_DIR
+      value: ./$(params.SOURCE_GIT_CONTEXT_DIR)
+    - name: GOALS
+      value:
+      - -DskipTests
+      - clean
+      - compile
+      - package
+    - name: MAVEN_MIRROR_URL
+      value: $(params.MAVEN_MIRROR_URL)
+    workspaces:
+    - name: source
+      workspace: app-source
+    - name: maven-settings
+      workspace: maven-settings
