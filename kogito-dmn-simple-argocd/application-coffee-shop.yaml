@@ -1,0 +1,333 @@
+﻿apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"argoproj.io/v1alpha1","kind":"Application","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"coffee-shop-app-of-apps"},"name":"coffee-shop","namespace":"888c4-argocd"},"spec":{"destination":{"namespace":"888c4-prod-coffeeshop","server":"https://kubernetes.default.svc"},"project":"coffee-shop","source":{"path":"./coffee-shop-kustomize/coffee-shop/overlays/production","repoURL":"http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git","targetRevision":"HEAD"},"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}
+  selfLink: /apis/argoproj.io/v1alpha1/namespaces/888c4-argocd/applications/coffee-shop
+  resourceVersion: '1204993740'
+  name: coffee-shop
+  uid: db865a5d-2402-473b-ad8b-0826f74fd9f4
+  creationTimestamp: '2021-10-06T19:08:17Z'
+  generation: 2582
+  managedFields:
+    - apiVersion: argoproj.io/v1alpha1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:syncPolicy':
+            'f:automated': {}
+      manager: argocd-server
+      operation: Update
+      time: '2021-10-07T13:59:29Z'
+    - apiVersion: argoproj.io/v1alpha1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            .: {}
+            'f:app.kubernetes.io/instance': {}
+        'f:spec':
+          .: {}
+          'f:destination':
+            .: {}
+            'f:namespace': {}
+            'f:server': {}
+          'f:project': {}
+          'f:source':
+            .: {}
+            'f:path': {}
+            'f:repoURL': {}
+            'f:targetRevision': {}
+          'f:syncPolicy':
+            .: {}
+            'f:automated':
+              'f:prune': {}
+              'f:selfHeal': {}
+        'f:status':
+          'f:history': {}
+          'f:sourceType': {}
+          .: {}
+          'f:sync':
+            .: {}
+            'f:comparedTo':
+              .: {}
+              'f:destination':
+                .: {}
+                'f:namespace': {}
+                'f:server': {}
+              'f:source':
+                .: {}
+                'f:path': {}
+                'f:repoURL': {}
+                'f:targetRevision': {}
+            'f:revision': {}
+            'f:status': {}
+          'f:health':
+            .: {}
+            'f:status': {}
+          'f:resources': {}
+          'f:summary':
+            .: {}
+            'f:images': {}
+          'f:reconciledAt': {}
+          'f:operationState':
+            .: {}
+            'f:finishedAt': {}
+            'f:message': {}
+            'f:operation':
+              .: {}
+              'f:initiatedBy':
+                .: {}
+                'f:username': {}
+              'f:retry': {}
+              'f:sync':
+                .: {}
+                'f:revision': {}
+                'f:syncStrategy':
+                  .: {}
+                  'f:hook': {}
+            'f:phase': {}
+            'f:startedAt': {}
+            'f:syncResult':
+              .: {}
+              'f:resources': {}
+              'f:revision': {}
+              'f:source':
+                .: {}
+                'f:path': {}
+                'f:repoURL': {}
+                'f:targetRevision': {}
+      manager: argocd-application-controller
+      operation: Update
+      time: '2021-10-11T15:24:57Z'
+  namespace: 888c4-argocd
+  labels:
+    app.kubernetes.io/instance: coffee-shop-app-of-apps
+spec:
+  destination:
+    namespace: 888c4-prod-coffeeshop
+    server: 'https://kubernetes.default.svc'
+  project: coffee-shop
+  source:
+    path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+    repoURL: >-
+      http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+status:
+  health:
+    status: Healthy
+  history:
+    - deployStartedAt: '2021-10-06T19:08:21Z'
+      deployedAt: '2021-10-06T19:10:57Z'
+      id: 0
+      revision: eaa371e28d538baa5e28756206dc070a0f7e28b7
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T12:24:20Z'
+      deployedAt: '2021-10-07T12:26:58Z'
+      id: 1
+      revision: 68ac167e14551f303ab775f251b789bfd5ab6112
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T12:37:11Z'
+      deployedAt: '2021-10-07T12:39:47Z'
+      id: 2
+      revision: 75a7b277d30199b4cddb9ee96a6e4c1b51a804f2
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T12:39:49Z'
+      deployedAt: '2021-10-07T12:42:26Z'
+      id: 3
+      revision: 628c716a52ab14a4ea2dc755541b67dd784a3291
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T12:46:09Z'
+      deployedAt: '2021-10-07T12:48:44Z'
+      id: 4
+      revision: d63617383539b43b07d235836bfdb12be394d36e
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T13:04:25Z'
+      deployedAt: '2021-10-07T13:07:01Z'
+      id: 5
+      revision: 78ae95428624a9ffba3fd5860ce1e94664c1d718
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T13:11:26Z'
+      deployedAt: '2021-10-07T13:14:03Z'
+      id: 6
+      revision: 836dd191446555c7e4d205dfbd3e001353ac15e2
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T13:27:28Z'
+      deployedAt: '2021-10-07T13:28:01Z'
+      id: 7
+      revision: 1f22ffd9dbba2f7acb94db625d7babd384be8ca4
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T13:47:03Z'
+      deployedAt: '2021-10-07T13:51:48Z'
+      id: 8
+      revision: 0d2a363ff5fb48eebe65ad81580496f04da63cf5
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    - deployStartedAt: '2021-10-07T13:56:51Z'
+      deployedAt: '2021-10-07T13:59:28Z'
+      id: 9
+      revision: 837dae73427c424b33f2dbeed4d6c8600a0dce40
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+  operationState:
+    finishedAt: '2021-10-07T13:59:29Z'
+    message: successfully synced (all tasks run)
+    operation:
+      initiatedBy:
+        username: admin
+      retry: {}
+      sync:
+        revision: 837dae73427c424b33f2dbeed4d6c8600a0dce40
+        syncStrategy:
+          hook: {}
+    phase: Succeeded
+    startedAt: '2021-10-07T13:56:51Z'
+    syncResult:
+      resources:
+        - syncPhase: Sync
+          message: secret/coffee-shop configured
+          name: coffee-shop
+          status: Synced
+          kind: Secret
+          version: v1
+          hookPhase: Running
+          namespace: 888c4-prod-coffeeshop
+          group: ''
+        - syncPhase: Sync
+          message: configmap/coffee-shop-dckmcgbb7f unchanged
+          name: coffee-shop-dckmcgbb7f
+          status: Synced
+          kind: ConfigMap
+          version: v1
+          hookPhase: Running
+          namespace: 888c4-prod-coffeeshop
+          group: ''
+        - syncPhase: Sync
+          message: service/coffee-shop unchanged
+          name: coffee-shop
+          status: Synced
+          kind: Service
+          version: v1
+          hookPhase: Running
+          namespace: 888c4-prod-coffeeshop
+          group: ''
+        - syncPhase: Sync
+          message: deployment.apps/coffee-shop configured
+          name: coffee-shop
+          status: Synced
+          kind: Deployment
+          version: v1
+          hookPhase: Running
+          namespace: 888c4-prod-coffeeshop
+          group: apps
+        - syncPhase: Sync
+          message: route.route.openshift.io/coffee-shop unchanged
+          name: coffee-shop
+          status: Synced
+          kind: Route
+          version: v1
+          hookPhase: Running
+          namespace: 888c4-prod-coffeeshop
+          group: route.openshift.io
+      revision: 837dae73427c424b33f2dbeed4d6c8600a0dce40
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+  reconciledAt: '2021-10-11T15:24:56Z'
+  resources:
+    - kind: ConfigMap
+      name: coffee-shop-dckmcgbb7f
+      namespace: 888c4-prod-coffeeshop
+      status: Synced
+      version: v1
+    - kind: Secret
+      name: coffee-shop
+      namespace: 888c4-prod-coffeeshop
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: coffee-shop
+      namespace: 888c4-prod-coffeeshop
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: coffee-shop
+      namespace: 888c4-prod-coffeeshop
+      status: Synced
+      version: v1
+    - group: route.openshift.io
+      kind: Route
+      name: coffee-shop
+      namespace: 888c4-prod-coffeeshop
+      status: Synced
+      version: v1
+  sourceType: Kustomize
+  summary:
+    images:
+      - >-
+        homework-nexus-registry.apps.shared-dev4.dev4.openshift.opentlc.com/888c4-coffee-shop:prod-2021-10-07-13-52-33
+  sync:
+    comparedTo:
+      destination:
+        namespace: 888c4-prod-coffeeshop
+        server: 'https://kubernetes.default.svc'
+      source:
+        path: ./coffee-shop-kustomize/coffee-shop/overlays/production
+        repoURL: >-
+          http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+        targetRevision: HEAD
+    revision: 4f003cc4e6ff513624dba57182d2afa63e81c9f8
+    status: Synced

@@ -1,0 +1,56 @@
+﻿apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  creationTimestamp: '2021-10-06T19:07:14Z'
+  name: argocd
+  namespace: 888c4-argocd
+  resourceVersion: '1188168834'
+  selfLink: /apis/argoproj.io/v1alpha1/namespaces/888c4-argocd/argocds/argocd
+spec:
+  controller:
+    resources:
+      limits:
+        cpu: 2
+        memory: 2Gi
+      requests:
+        cpu: 1
+        memory: 1Gi
+  image: argoproj/argocd
+  redis:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+  repo:
+    resources:
+      limits:
+        cpu: 1
+        memory: 512Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+  server:
+    insecure: true
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      reguests:
+        cpu: 125m
+        memory: 128Mi
+    route:
+      enabled: true
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+  version: v2.0.1
+status:
+  applicationController: Running
+  dex: Unknown
+  phase: Available
+  redis: Running
+  repo: Running
+  server: Running

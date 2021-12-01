@@ -1,0 +1,31 @@
+﻿apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  creationTimestamp: '2021-10-06T19:07:28Z'
+  generation: 1
+  name: coffee-shop
+  namespace: 888c4-argocd
+  resourceVersion: '1184934148'
+  selfLink: /apis/argoproj.io/v1alpha1/namespaces/888c4-argocd/appprojects/coffee-shop
+  uid: d9304fc7-72fe-4692-a24e-734e77e30564
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  description: ArgoCD project for Coffee Shop Application (888c4)
+  destinations:
+    - namespace: 888c4-prod-coffeeshop
+      server: 'https://kubernetes.default.svc'
+    - namespace: 888c4-argocd
+      server: 'https://kubernetes.default.svc'
+    - namespace: 888c4-pipeline
+      server: 'https://kubernetes.default.svc'
+  namespaceResourceBlacklist:
+    - group: tekton.dev
+      kind: TaskRun
+    - group: tekton.dev
+      kind: PipelineRun
+  sourceRepos:
+    - >-
+      http://homework-gitea.gpte-hw-cicd.svc:3000/pbrown-redhat.com-888c4/coffee-shop-final-lab.git
+    - 'http://homework-nexus.gpte-hw-cicd.svc:8081/repository/helm'

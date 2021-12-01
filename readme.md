@@ -201,7 +201,11 @@ Note: We need to use the image tag from the previous step.
 
 ## Argo CD Time.
 
-
+1. Create YAML manifest for all of the application components 
+        a. Get all of the resources required
+            ```
+            oc get all --selector build=simple-dmn-docker-native
+            ```
 # Install Operators
 
 * Prereqs
