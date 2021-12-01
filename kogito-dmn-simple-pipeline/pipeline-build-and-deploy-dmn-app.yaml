@@ -12,7 +12,7 @@ spec:
   - name: SOURCE_GIT_URL
     type: string
     description: The application git repository url
-    default: https://github.com/redhat-gpte-devopsautomation/coffee-shop-source
+    default: https://github.com/pauljamesbrown/rhdm-pipeline-example
 
   - name: SOURCE_GIT_REVISION
     type: string
@@ -21,7 +21,7 @@ spec:
   
   - name: SOURCE_GIT_CONTEXT_DIR
     type: string
-    default: coffee-shop
+    default: kogito-dmn-simple-rule
     description: The subdirectory in the git repository
 
   - name: KUSTOMIZE_GIT_URL
@@ -31,7 +31,7 @@ spec:
 
   - name: KUSTOMIZE_GIT_REVISION
     type: string
-    default: master
+    default: main
     description: The kustomize git repository revision
 
   - name: KUSTOMIZE_GIT_CONTEXT_DIR
@@ -73,7 +73,8 @@ spec:
       value: 'true'
     workspaces:
     - name: output
-      workspace: app-source
+      persistentVolumeClaim:
+        claimName: workspace-pvc
 
   - name: generate-tag
     taskRef:
