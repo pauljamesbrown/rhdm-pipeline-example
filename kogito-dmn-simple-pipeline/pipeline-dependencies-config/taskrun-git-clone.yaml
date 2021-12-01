@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  generateName: git-clone-
+  generateName: git-clone-name
 spec:
   taskRef:
     kind: ClusterTask
