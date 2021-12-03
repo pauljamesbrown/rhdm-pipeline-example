@@ -3,7 +3,7 @@
 apiVersion: app.kiegroup.org/v1beta1
 kind: KogitoBuild
 metadata:
-  name: self-healing-infra-simple
+  name: dmn-simple-rule
 spec:
   buildImage: quay.io/kiegroup/kogito-builder:latest
   runtimeImage: quay.io/kiegroup/kogito-runtime-jvm:latest
@@ -13,7 +13,7 @@ spec:
 apiVersion: app.kiegroup.org/v1beta1
 kind: KogitoRuntime
 metadata:
-  name: self-healing-infra-simple
+  name: dmn-simple-rule
 spec:
   infra:
     - KAFKA_INFRA_NAME

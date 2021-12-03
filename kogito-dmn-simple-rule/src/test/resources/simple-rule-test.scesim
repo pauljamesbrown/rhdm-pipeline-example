@@ -265,7 +265,7 @@
     <dmnFilePath>kogito-dmn-simple-rule/src/main/resources/simple-rule.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_75307D32-69DE-4C81-8916-E91BF3B10B4A</dmnNamespace>
-    <dmnName>self-healing-simple</dmnName>
+    <dmnName>simple-dmn-rule</dmnName>
     <skipFromBuild>false</skipFromBuild>
     <stateless>false</stateless>
   </settings>
