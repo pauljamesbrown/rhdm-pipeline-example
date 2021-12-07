@@ -4,8 +4,6 @@ metadata:
   name: simple-dmn-rule
 spec:
   selector:
-      matchLabels:
-        deployment: simple-dmn-rule
   template:
     spec:
       containers:
