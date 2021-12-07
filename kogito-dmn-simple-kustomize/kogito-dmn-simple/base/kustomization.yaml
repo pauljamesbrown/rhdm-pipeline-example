@@ -4,5 +4,4 @@ resources:
 - deployment.yaml
 - route.yaml
 - service.yaml
-commonLabels:
-  app: simple-dmn-rule
+
