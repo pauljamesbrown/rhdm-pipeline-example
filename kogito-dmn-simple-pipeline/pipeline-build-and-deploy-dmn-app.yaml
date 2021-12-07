@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   creationTimestamp: '2021-12-01T14:19:20Z'
-  generation: 20
+  generation: 25
   managedFields:
     - apiVersion: tekton.dev/v1beta1
       fieldsType: FieldsV1
@@ -17,7 +17,7 @@ metadata:
       time: '2021-12-01T16:06:36Z'
   name: new-pipeline
   namespace: dmn-simple
-  resourceVersion: '1289802'
+  resourceVersion: '1496834'
   selfLink: /apis/tekton.dev/v1beta1/namespaces/dmn-simple/pipelines/new-pipeline
   uid: b920e58a-1307-4263-af7e-67fef3ab26e7
 spec:
@@ -38,11 +38,12 @@ spec:
       description: The application git repository revision
       name: SOURCE_GIT_REVISION
       type: string
-    - default: 'http://homework-nexus.gpte-hw-cicd.svc:8081/repository/maven-central/'
+    - default: >-
+        http://maven-mirror-openshift-operators.apps.cluster-hlfs7.hlfs7.sandbox85.opentlc.com/repository/maven-public/
       description: Maven mirror for Maven Builds
       name: MAVEN_MIRROR_URL
       type: string
-    - default: dmn-simple-dev
+    - default: dmn-simple
       description: Namespace where the buildconfig is located
       name: NAMESPACE_DEV
       type: string
