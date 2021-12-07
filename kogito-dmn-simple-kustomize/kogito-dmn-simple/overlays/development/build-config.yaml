@@ -1,0 +1,33 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewBuild
+  labels:
+    build: simple-dmn-rule
+  name: simple-dmn-rule
+  namespace: dmn-simple
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: simple-dmn-rule:latest
+  runPolicy: Serial
+  source:
+    type: Binary
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: openjdk-11:latest
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - github:
+      secret: 1as4F_iciSjPzMLiqcoZ
+    type: GitHub
+  - generic:
+      secret: EchxrbS0YIzmUlDI_nqm
+    type: Generic

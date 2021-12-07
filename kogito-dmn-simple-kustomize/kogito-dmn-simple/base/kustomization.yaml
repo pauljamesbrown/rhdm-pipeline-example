@@ -5,4 +5,4 @@ resources:
 - route.yaml
 - service.yaml
 commonLabels:
-  app: kogito-dmn-simple
+  app: simple-dmn-rule

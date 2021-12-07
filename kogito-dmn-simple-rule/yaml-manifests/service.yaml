@@ -4,19 +4,15 @@ metadata:
   annotations:
     openshift.io/generated-by: OpenShiftNewApp
   labels:
-    app: kogito-dmn-simple
-    app.kubernetes.io/component: kogito-dmn-simple
-    app.kubernetes.io/instance: kogito-dmn-simple
-  name: kogito-dmn-simple
-  namespace: pbrown-dev
+    app: simple-dmn-rule
+    app.kubernetes.io/component: simple-dmn-rule
+    app.kubernetes.io/instance: simple-dmn-rule
+  name: simple-dmn-rule
+  namespace: dmn-simple
 spec:
-  clusterIP: 172.30.139.151
+  clusterIP: 172.30.247.30
   clusterIPs:
-  - 172.30.139.151
-  internalTrafficPolicy: Cluster
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
+  - 172.30.247.30
   ports:
   - name: 8080-tcp
     port: 8080
@@ -25,4 +21,4 @@ spec:
   - name: 8778-tcp
     port: 8778
   selector:
-    deployment: kogito-dmn-simple
+    deployment: simple-dmn-rule

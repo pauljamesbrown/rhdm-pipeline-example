@@ -95,6 +95,9 @@ spec:
           workspace: app-source
         - name: maven-settings
           workspace: maven-settings
+
+# Need to add an oc command to check the build config exists.
+
     - name: build-image
       params:
         - name: FROM_FILE

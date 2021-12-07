@@ -5,10 +5,10 @@ bases:
 - ../../base
 
 resources:
-- ./imagestream.yaml
+- ./image-stream.yaml
+- ./build-config.yaml
+
+namespace: dmn-simple
 
 patches:
-- ./deployment-patches.yaml
-
-commonLabels:
-  app: kogito-dmn-simple
+  - ./deployment-patches.yaml

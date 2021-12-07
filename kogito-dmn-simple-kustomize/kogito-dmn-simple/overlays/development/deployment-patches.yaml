@@ -1,19 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "3"
-    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"kogito-dmn-simple:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"kogito-dmn-simple\")].image"}]'
-    openshift.io/generated-by: OpenShiftNewApp
-  labels:
-    app: kogito-dmn-simple
-    app.kubernetes.io/component: kogito-dmn-simple
-    app.kubernetes.io/instance: kogito-dmn-simple
-  name: kogito-dmn-simple
-  namespace: pbrown-dev
+  name: simple-dmn-rule
 spec:
   template:
     spec:
       containers:
-      - image: default-route-openshift-image-registry.apps.sandbox.x8i5.p1.openshiftapps.com/pbrown-dev/kogito-dmn-simple:latest-10
-        name: kogito-dmn-simple
+      - image: image-registry.openshift-image-registry.svc:5000/dmn-simple/simple-dmn-rule@sha256:1d44a53e233ce4a76c307079646435494aac6c52324af7f3de7b600887161f7f
+        name: simple-dmn-rule

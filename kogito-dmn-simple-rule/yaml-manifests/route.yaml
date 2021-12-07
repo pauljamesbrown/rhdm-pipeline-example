@@ -4,17 +4,17 @@ metadata:
   annotations:
     openshift.io/host.generated: "true"
   labels:
-    app: kogito-dmn-simple
-    app.kubernetes.io/component: kogito-dmn-simple
-    app.kubernetes.io/instance: kogito-dmn-simple
-  name: kogito-dmn-simple
-  namespace: pbrown-dev
+    app: simple-dmn-rule
+    app.kubernetes.io/component: simple-dmn-rule
+    app.kubernetes.io/instance: simple-dmn-rule
+  name: simple-dmn-rule
+  namespace: dmn-simple
 spec:
-  host: kogito-dmn-simple-pbrown-dev.apps.sandbox.x8i5.p1.openshiftapps.com
+  host: simple-dmn-rule-dmn-simple.apps.cluster-hlfs7.hlfs7.sandbox85.opentlc.com
   port:
     targetPort: 8080-tcp
   to:
     kind: Service
-    name: kogito-dmn-simple
+    name: simple-dmn-rule
     weight: 100
   wildcardPolicy: None
