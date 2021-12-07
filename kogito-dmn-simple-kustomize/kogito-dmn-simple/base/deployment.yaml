@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "2"
-    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"simple-dmn-rule:latest","namespace":"dmn-simple"},"fieldPath":"spec.template.spec.containers[?(@.name==\"simple-dmn-rule\")].image"}]'
-    openshift.io/generated-by: OpenShiftNewApp
   labels:
     app.kubernetes.io/component: simple-dmn-rule
     app.kubernetes.io/instance: simple-dmn-rule
@@ -14,6 +10,9 @@ spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      deployment: simple-dmn-rule
   strategy:
     rollingUpdate:
       maxSurge: 25%
