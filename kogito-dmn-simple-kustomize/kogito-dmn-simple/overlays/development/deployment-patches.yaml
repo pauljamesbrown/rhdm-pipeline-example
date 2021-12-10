@@ -6,5 +6,5 @@ spec:
   template:
     spec:
       containers:
-      - image: image-registry.openshift-image-registry.svc:5000/dmn-simple/simple-dmn-rule@sha256:1d44a53e233ce4a76c307079646435494aac6c52324af7f3de7b600887161f7f
+      - image: image-registry.openshift-image-registry.svc:5000/dmn-simple/simple-dmn-rule:dev-2021-12-10-10-05-31
         name: simple-dmn-rule
