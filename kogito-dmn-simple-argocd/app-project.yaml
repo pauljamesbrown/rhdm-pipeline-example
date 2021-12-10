@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  creationTimestamp: '2021-12-07T11:32:21Z'
+  generation: 4
+  managedFields:
+    - apiVersion: argoproj.io/v1alpha1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:destinations': {}
+          'f:sourceRepos': {}
+        'f:status': {}
+      manager: argocd-server
+      operation: Update
+      time: '2021-12-07T11:33:52Z'
+  name: simple-dmn-rule
+  namespace: dmn-simple
+  resourceVersion: '2367190'
+  selfLink: /apis/argoproj.io/v1alpha1/namespaces/dmn-simple/appprojects/simple-dmn-rule
+  uid: 6c6a5199-4d97-4165-8a53-3bb32eadfece
+spec:
+  destinations:
+    - namespace: dmn-simple
+      server: 'https://kubernetes.default.svc'
+  sourceRepos:
+    - 'https://github.com/pauljamesbrown/rhdm-pipeline-example.git'
+status: {}

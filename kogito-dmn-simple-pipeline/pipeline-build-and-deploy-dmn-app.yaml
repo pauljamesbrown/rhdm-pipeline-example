@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   creationTimestamp: '2021-12-01T14:19:20Z'
-  generation: 25
+  generation: 36
   managedFields:
     - apiVersion: tekton.dev/v1beta1
       fieldsType: FieldsV1
@@ -10,14 +10,15 @@ metadata:
         'f:spec':
           .: {}
           'f:params': {}
+          'f:resources': {}
           'f:tasks': {}
           'f:workspaces': {}
       manager: Mozilla
       operation: Update
-      time: '2021-12-01T16:06:36Z'
+      time: '2021-12-09T16:07:04Z'
   name: new-pipeline
   namespace: dmn-simple
-  resourceVersion: '1496834'
+  resourceVersion: '3159509'
   selfLink: /apis/tekton.dev/v1beta1/namespaces/dmn-simple/pipelines/new-pipeline
   uid: b920e58a-1307-4263-af7e-67fef3ab26e7
 spec:
@@ -46,6 +47,26 @@ spec:
     - default: dmn-simple
       description: Namespace where the buildconfig is located
       name: NAMESPACE_DEV
+      type: string
+    - default: 'https://github.com/pauljamesbrown/rhdm-pipeline-example.git'
+      description: The kustomize git repository url
+      name: KUSTOMIZE_GIT_URL
+      type: string
+    - default: main
+      description: The kustomize git repository revision
+      name: KUSTOMIZE_GIT_REVISION
+      type: string
+    - default: kogito-dmn-simple-kustomize/kogito-dmn-simple
+      description: The subdirectory in the kustomize git repository
+      name: KUSTOMIZE_GIT_CONTEXT_DIR
+      type: string
+    - default: overlays/development/deployment-patches.yaml
+      description: The YAML file in which to patch the image
+      name: KUSTOMIZE_GIT_FILE_NAME
+      type: string
+    - default: 'image-registry.openshift-image-registry.svc:5000'
+      description: External URL for the container registry to set the production image from
+      name: IMAGE_REGISTRY_URL
       type: string
   tasks:
     - name: git-clone
@@ -95,9 +116,6 @@ spec:
           workspace: app-source
         - name: maven-settings
           workspace: maven-settings
-
-# Need to add an oc command to check the build config exists.
-
     - name: build-image
       params:
         - name: FROM_FILE
@@ -128,6 +146,44 @@ spec:
       taskRef:
         kind: ClusterTask
         name: openshift-client
+    - name: set-image-in-dev
+      params:
+        - name: ARGS
+          value:
+            - set
+            - image
+            - deployment
+            - $(params.APP_NAME)
+            - >-
+              $(params.APP_NAME)=image-registry.openshift-image-registry.svc:5000/$(params.NAMESPACE_DEV)/$(params.APP_NAME):dev-$(tasks.generate-tag.results.image-tag)
+            - '-n $(params.NAMESPACE_DEV)'
+      runAfter:
+        - tag-image-for-development
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client
+    - name: update-kustomize-repo
+      params:
+        - name: gitRepositoryUrl
+          value: $(params.KUSTOMIZE_GIT_URL)
+        - name: gitRepositoryRevision
+          value: $(params.KUSTOMIZE_GIT_REVISION)
+        - name: gitPath
+          value: $(params.KUSTOMIZE_GIT_CONTEXT_DIR)
+        - name: fileName
+          value: $(params.KUSTOMIZE_GIT_FILE_NAME)
+        - name: image
+          value: >-
+            $(params.IMAGE_REGISTRY_URL)/$(params.NAMESPACE_DEV)/$(params.APP_NAME)
+        - name: imageTag
+          value: dev-$(tasks.generate-tag.results.image-tag)
+        - name: verbose
+          value: 'true'
+      runAfter:
+        - set-image-in-dev
+      taskRef:
+        kind: Task
+        name: update-kustomize-repo
   workspaces:
     - name: app-source
     - name: maven-settings
