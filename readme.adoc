@@ -6,6 +6,8 @@
 :encoding: UTF-8
 :imagesdir: kogito-dmn-simple-docs/images/
 
+WARN: THIS IS WORK IN_PROGRESS
+
 = A Continuous Integration and Continuous Deployment Approach for Kogito Business Rules.
 
 Building and automating the deployment of business rules can appear to be a daunting challenge, especially when the rule changes are time critical.
