@@ -6,7 +6,7 @@
 :encoding: UTF-8
 :imagesdir: kogito-dmn-simple-docs/images/
 
-WARN: THIS IS WORK IN_PROGRESS
+= WARNING THIS IS WORK IN PROGRESS
 
 = A Continuous Integration and Continuous Deployment Approach for Kogito Business Rules.
 
