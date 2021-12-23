@@ -24,10 +24,4 @@ spec:
         name: openjdk-11:latest
     type: Source
   successfulBuildsHistoryLimit: 5
-  triggers:
-  - github:
-      secret: 1as4F_iciSjPzMLiqcoZ
-    type: GitHub
-  - generic:
-      secret: EchxrbS0YIzmUlDI_nqm
-    type: Generic
+  
