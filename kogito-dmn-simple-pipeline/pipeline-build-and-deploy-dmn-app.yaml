@@ -27,7 +27,7 @@ spec:
       name: SOURCE_GIT_REVISION
       type: string
     - default: >-
-        http://maven-mirror-openshift-operators.apps.cluster-hlfs7.hlfs7.sandbox85.opentlc.com/repository/maven-public/
+        http://<UPDATE>/repository/maven-public/
       description: Maven mirror for Maven Builds
       name: MAVEN_MIRROR_URL
       type: string
