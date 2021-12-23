@@ -119,7 +119,7 @@ oc route simple-dmn-rule -o json -p
 . To invoke the rule you can use the following curl command.
 	‘’curl -X POST
 
-===- Templating the Rules App Deployment Configuration
+==== Templating the Rules App Deployment Configuration
 
 Now we have our rules application built and deployed successfully we need to ensure it remains that way by placing all of the kubernetes manifests under source control. This is where Kustomize comes into play as it not only allows us to maintain a base setting of configuration but you can use overlays to manage any deployment variations.
 
