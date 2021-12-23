@@ -1,0 +1,59 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: dmn-simple-pipeline
+  namespace: dmn-simple
+  resourceVersion: '3159509'
+  selfLink: /apis/tekton.dev/v1beta1/namespaces/dmn-simple/pipelines/new-pipeline
+spec:
+  params:
+    - default: simple-dmn-rule
+      description: The application deployment name
+      name: APP_NAME
+      type: string
+    - default: 'https://github.com/pauljamesbrown/rhdm-pipeline-example.git'
+      description: The application git repository url
+      name: SOURCE_GIT_URL
+      type: string
+    - default: kogito-dmn-simple-rule
+      description: The subdirectory in the git repository
+      name: SOURCE_GIT_CONTEXT_DIR
+      type: string
+    - default: main
+      description: The application git repository revision
+      name: SOURCE_GIT_REVISION
+      type: string
+    - default: >-
+        http://maven-mirror-openshift-operators.apps.cluster-hlfs7.hlfs7.sandbox85.opentlc.com/repository/maven-public/
+      description: Maven mirror for Maven Builds
+      name: MAVEN_MIRROR_URL
+      type: string
+    - default: dmn-simple
+      description: The project dev namespace
+      name: NAMESPACE_DEV
+      type: string
+    - default: 'https://github.com/pauljamesbrown/rhdm-pipeline-example.git'
+      description: The kustomize git repository url
+      name: KUSTOMIZE_GIT_URL
+      type: string
+    - default: main
+      description: The kustomize git repository revision
+      name: KUSTOMIZE_GIT_REVISION
+      type: string
+    - default: kogito-dmn-simple-kustomize/kogito-dmn-simple
+      description: The subdirectory in the kustomize git repository
+      name: KUSTOMIZE_GIT_CONTEXT_DIR
+      type: string
+    - default: overlays/development/deployment-patches.yaml
+      description: The YAML file in which to patch the image
+      name: KUSTOMIZE_GIT_FILE_NAME
+      type: string
+    - default: 'image-registry.openshift-image-registry.svc:5000'
+      description: External URL for the container registry to set the production image from
+      name: IMAGE_REGISTRY_URL
+      type: string
+  tasks:
+ ##########<TBC>
+  workspaces:
+    - name: app-source
+    - name: maven-settings

@@ -1,0 +1,35 @@
+:data-uri:
+:toc:
+:sectanchors: true
+:sectlinks: true
+:sectnums: true
+:encoding: UTF-8
+:imagesdir: kogito-dmn-simple-docs/images/
+
+= A Continuous Integration and Continuous Deployment Approach for Kogito Business Rules.
+
+Building and automating the deployment of business rules can appear to be a daunting challenge, especially when the rule changes are time critical.
+
+In this post I’ll walk you through a basic approach for developing a Kogito Business Rule and deploying that rule using an automated pipeline using kubernetes.
+
+The technology used includes: 
+
+* Kogito Rules Management using DMN - https://kogito.kie.org/get-started/
+* Openshift - Kubernetes platform
+* Tekton -  Cloud Native pipelines - https://tekton.dev/
+* ArgoCD - Kubernetes GitOps tool - https://argo-cd.readthedocs.io/en/stable/
+* Kustomize - Kubernetes config management - https://kustomize.io/
+
+## The Big Picture
+
+[#big-picture]
+.The Big Picture
+image::kogito_CICD.png[Big Picture]
+
+## Manually Deploying Kogito Based Business Rules
+
+include::kogito-dmn-simple-docs/kogito-deployment-approaches.adoc[]
+
+## Automatically Deploying Kogito Based Business Rules
+
+include::kogito-dmn-simple-docs/kogito-pipeline-description.adoc[]

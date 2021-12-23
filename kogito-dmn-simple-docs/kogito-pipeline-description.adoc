@@ -1,0 +1,488 @@
+:data-uri:
+:toc:
+:sectanchors: true
+:sectlinks: true
+:sectnums: true
+:encoding: UTF-8
+:imagesdir: kogito-dmn-simple-docs/images/
+
+== Getting Started
+
+I’m goning to focus on building the pipeline rather than spending time explaining how to build a DMN rule….if you need to know this take a read of this blog >>TBC<<.
+
+To get the application built, validated and deployed I’m going to need a pipeline that does the following: 
+
+* Clones the git repo where the source code for the kogito rule is sitting.
+* Generates a build tag that I can use to label the code.
+Builds the rule using maven….the Kogito DMN rule uses Quarkus for the runtime.
+* Builds the container image 
+* Tags the container image
+* Updates running deployment 
+* Updates the Kustomize config so my deployments remain in sync with the SCM.
+
+=== Pre-requisites 
+
+. Openshift cluster - Access a running OpenShift Container Platform 4 cluster with administrative privileges
+. Openshift GitOps operator installed (this includes ArgoCD - https://catalog.redhat.com/software/operators/detail/5fb288c70a12d20cbecc6056
+. Openshift Pipelines operator installed - https://catalog.redhat.com/software/operators/detail/5ec54a4628834587a6b85ca5
+ 
+. Tekton CLU - Install Tekton CLI tkn on your local system and add its location to your PATH environment variable. https://openshift.github.io/pipelines-docs/docs/0.10.5/proc_installing-cli.html
+. oc neat - https://github.com/itaysk/kubectl-neat
+. Kustomize cli - https://kustomize.io/
+
+=== Steps:
+
+NOTE: Ensure you’ve installed the following operators:
+Red Hat Git Ops - (This includes the ArgoCD tooling)
+Openshift Pipelines - (This gives us the ability to create Tekton pipelines)
+
+==== Package the rule project 
+One of the first things you need to do is to build, package and deploy your new Kogito based DMN. We will only need to do this once.
+
+. There are several approaches you can use for packaging and deploying your rules application but for now I’m just going to choose a binary which requires an uber-jar to be created. 
+.. The easiest way to do this is to specify the following property in the application.properties file within you rule project:
++
+:source-highlighter: coderay
+[source,shell]
+----
+quarkus.package.type=uber-jar 
+----
++
+You can read more about this here: https://quarkus.io/guides/maven-tooling#uber-jar-maven
+.. Build your project using maven 
++
+:source-highlighter: coderay
+[source,shell]
+----
+mvn clean package
+----
++
+Check the target directory and you should see a file named 
++
+:source-highlighter: coderay
+[source,shell]
+----
+ *simple-dmn-rule-1.0-SNAPSHOT-runner.jar*
+----
+.. Check everything works quickly by running this command:
++
+:source-highlighter: coderay
+[source,shell]
+----
+java -jar target/simple-dmn-rule-1.0-SNAPSHOT-runner.jar 
+----
+
+==== Deploying the rule project to Openshift 
+
+Now we have our app built we need to deploy that as a binary app to the Openshift environment.
+
+. Create a new build config:
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc new-build registry.access.redhat.com/ubi8/openjdk-11 --name simple-dmn-rule --binary=true
+----
++
+. We need to start a binary build for the build config we’ve just created using the jar file from the local target directory:
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc start-build simple-dmn-rule --from-file=./target/simple-dmn-rule-1.0-SNAPSHOT-runner.jar --follow=true --wait
+----
++
+. Now, to deploy the resulting image we can simply create a new app based on the image created.
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc new-app simple-dmn-rule:latest
+----
++
+. Test the rule is working and for this we will need to create a route to expose the service to the outside world.
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc get svc simple-dmn-rule 
+----
++
+WARN: If this doesn’t return any results then the next step will fail.
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc expose svc simple-dmn-rule 
+oc route simple-dmn-rule -o json -p 
+----
+. To invoke the rule you can use the following curl command.
+	‘’curl -X POST
+
+===- Templating the Rules App Deployment Configuration
+
+Now we have our rules application built and deployed successfully we need to ensure it remains that way by placing all of the kubernetes manifests under source control. This is where Kustomize comes into play as it not only allows us to maintain a base setting of configuration but you can use overlays to manage any deployment variations.
+
+NOTE: I’ve installed the oc neat utility for this section. Oc neat is a utility that removes some of the unnecessary content from the kubernetes manifests making it easier to read.
+
+. Create a new directory called “kogitio-dmn-simple-kustomise” to store you kubernetes config files.
+
+. kustomize uses the concept of a base set of files and then you have separate file overlays for the various environments. For the base set of configuration we need the following files created in the “{$HOME}/kogitio-dmn-simple-kustomise/base” directory.
+
+.. deployment.yaml
+.. service.yaml
+.. route.yaml
+
+.. To create these files use the following commands
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc get all —selector app=kogitio-dmn-service -o name
+oc get deployment kogito-dmn-simple -o yaml | oc neat >deployment.yaml
+oc get service kogito-dmn-simple -o yaml | oc neat >deployment.yaml
+oc get route kogito-dmn-simple -o yaml | oc neat >deployment.yaml
+----
+. Within the base directory we also need to create a customization.yaml which is used to specify the required files.
++
+:source-highlighter: coderay
+[source,shell]
+----
+echo 'apiVersion: kustomize.config.k8s.io/v1beta1  
+kind: kustomization 
+resources: 
+- ./deployment.yaml 
+- ./route.yaml 
+- ./service.yaml' > kustomization.yaml
+----
++
+. Now we need to create the yaml configuration files for the development environment.
+.. Create a new directory called “development”
+... The end result should be a directory like this “{$HOME}/kogitio-dmn-simple-kustomise/development”
+.. oc get is kogito-dmn-simple -o yaml | oc neat >image-stream.yaml
+oc get bc kogito-dmn-simple -o yaml | oc neat >build-config.yaml
+Within the “development” directory we also need to create a customization.yaml which is used to specify the required files.
++
+:source-highlighter: coderay
+[source,shell]
+----
+echo 'apiVersion: kustomize.config.k8s.io/v1beta1
+kind: kustomization
+resources:
+- ./image-stream.yaml
+- ./build-config.yaml 
+
+Namespace: dmn-simple
+patches:
+./deployment-patches.yaml' > kustomization.yaml 
+----
++
+. We need to create the deployment-patches yaml within the “development” directory.  This file contains the latest stable development image (once built) which kustomise uses as an overlay for the base deployment.yaml. 
++
+:source-highlighter: coderay
+[source,shell]
+----
+echo 'apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+name: simple-dmn-rule
+spec:
+     template: 
+          container:
+                 containers
+- image: <image-name>
+   name: simple-dmn-rule' > deployment-patches.yaml 
+----
++
+NOTE: 
+. If you are wanting to install ArgoCD with multiple projects I would recommend taking a read of this blog : http://heidloff.net/article/deploying-argocd-on-openshift/
+. Kustomize patching issue : https://discuss.kubernetes.io/t/kustomize-failed-to-find-unique-target-for-patch/10582/9 Resolution - Removed the namespace from the base deployment.yaml
+
+
+==== [TBC] Setting Up Argo CD
+. Ensure the ArgoCD or Openshift GitOps operator is installed 
+. Get the route for the ArgoCD console 
+. Get the password for the console
+. Create an application
+
+==== Pipeline Creation Prerequisites 
+b
+. GIT Personal Access Token: You will need to create a git access token for your pipeline to use. I’m using github.com in this example
+.. Login to github.com and select settings from the list of options shown in the drop down under your username.
+.. On the settings page scroll down to “Developer Settings”
+.. Select “Personal Access Tokens” and generate a new token.
+
+. Create Secret: The pipeline will need access to the git repository so we need to create a secret to store the personal access token.
++
+:source-highlighter: coderay
+[source,shell]
+----
+	Oc create secret generic git-token –from-literal=username=pipeline –from-literal=password={your token}  –type “kubernetes.io/basic-auth” -n {your-namespace}
+----
+
+. Annotate the Secret: The tekton pipelines associated credentials with URL’s via an annotation on the secret. Tekton ignores all Secrets that are not properly annotated.
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc annotate secret git-token “tekton.dev/git-0=${GIT_URL}/${GIT_USER}”
+----
+NOTE: Additional reading: https://github.com/tektoncd/pipeline/blob/main/docs/auth.md
+
+. Link the Secret & Pipeline : Now we need to link the secret with the pipeline 
++
+:source-highlighter: coderay
+[source,shell]
+----
+oc secret link pipeline git-token -n {your-namespace}
+----
+. Create a shared workspace: We are going to need to pass information / data from one step to another within the pipeline, and to achieve this we will need to use a tekton workspace. A Pipeline can use Workspaces to show how storage will be shared through its Tasks.
++
+:source-highlighter: coderay
+[source,shell]
+----
+cat <<EOF >${HOME}/kogito-dmn-simple-pipeline/workspace-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: workspace-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+EOF
+
+oc create -f ${HOME}/kogito-dmn-simple-pipeline/workspace-pvc.yaml -n pipeline
+----
+NOTE: Additional reading: https://github.com/tektoncd/pipeline/blob/main/docs/workspaces.md
+
+==== Building the Deployment Pipeline
+
+Now we are going to build the actual pipeline using various tekton tasks. Some tasks are pre-installed by the Openshift Pipelines operator. The see what is already installed use the following command:
+
+:source-highlighter: coderay
+[source,shell]
+----
+tkn clustertasks list
+----
+
+By the end of this section we would hopefully have created a pipeline that looks like this: 
+
+NOTE: 
+*Additional reading*
+. Pipeline : https://github.com/tektoncd/pipeline/blob/main/docs/pipelines.md
+. Pipeline Run : https://github.com/tektoncd/pipeline/blob/main/docs/pipelineruns.md
+. Tasks : https://github.com/tektoncd/pipeline/blob/main/docs/tasks.md 
+. TaskRun : https://github.com/tektoncd/pipeline/blob/main/docs/taskruns.md
+
+===== Create the Pipeline Shell
+The first step is to create the actual pipeline. 
+. Run the following command to install the pipeline
+
+:source-highlighter: coderay
+[source,shell]
+----
+oc create -f <Path to pipeline shell>
+----
+The pipeline starts with the standard kind declarations plus a list of parameters, zero tasks (we will add those shortly), and two workspace definitions.
+
+====== Task 1 : Git Clone
+
+The git clone task should already have been installed by the Openshift Pipelines operator. 
+
+:source-highlighter: coderay
+[source,shell]
+----
+tasks:
+   - name: git-clone
+     params:
+       - name: url
+         value: $(params.SOURCE_GIT_URL)
+       - name: revision
+         value: $(params.SOURCE_GIT_REVISION)
+       - name: deleteExisting
+         value: 'true'
+       - name: gitInitImage
+         value: >-
+       registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:afc5d3f9efe26c7042635d43b8ffd09d67936e3d0b6b901dc08a33e20313d361
+     taskRef:
+       kind: ClusterTask
+       name: git-clone
+     workspaces:
+       - name: output
+         workspace: app-source
+----
+
+===== Task 2: Generate Tag
+
+This task doesn’t exist so you will need to create it. The purpose of this task is to create a simple tag based on the current day and time (YYYY-MM-YY-HH-MM-SS)  that we can apply to the build 
+. The task doesn't exist within the cluster or namespace so this needs to be added.
+
+:source-highlighter: coderay
+[source,shell]
+----
+oc create -f task-generate-tag.yaml
+----
+. Call the generate-tag task from the pipeline
++
+:source-highlighter: coderay
+[source,shell]
+----
+   - name: generate-tag
+     runAfter:
+       - git-clone
+     taskRef:
+       kind: Task
+       name: generate-tag
+----
+
+===== Task 3: Maven Build
+
+We have the source code and a build tag so now we are going to run the maven build. For this we will use the maven task from the tekton hub site:
+https://hub.tekton.dev/tekton/task/maven 
+
+The task needs to be installed into the our Openshift instance:
+
+:source-highlighter: coderay
+[source,shell]
+----
+kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/maven/0.2/maven.yaml
+----
+Once it’s been installed you can view the steps taken by the task by using the oc describe function
+
+:source-highlighter: coderay
+[source,shell]
+----
+tkn task describe maven
+----
+
+Call the generate-tag task from the pipeline. I’ve added the maven mirror url parameter but this isn’t necessary if you don’t have a maven mirror configured.
+
+:source-highlighter: coderay
+[source,shell]
+----
+ - name: maven-build
+     params:
+       - name: MAVEN_IMAGE
+         value: 'registry.access.redhat.com/ubi8/openjdk-11:1.3'
+       - name: CONTEXT_DIR
+         value: ./$(params.SOURCE_GIT_CONTEXT_DIR)
+       - name: GOALS
+         value:
+           - '-DskipTests'
+           - clean
+           - compile
+           - package
+       - name: MAVEN_MIRROR_URL
+         value: $(params.MAVEN_MIRROR_URL)
+     runAfter:
+       - generate-tag
+     taskRef:
+       kind: Task
+        name: maven
+     workspaces:
+       - name: source
+         workspace: app-source
+       - name: maven-settings
+         workspace: maven-settings
+----
+
+===== Task 4: Build Image
+At the moment there’s no s2i build task available so you need to create your own using the Openshift cli image and some scripting.
+
+:source-highlighter: coderay
+[source,shell]
+----
+   - name: build-image
+     params:
+       - name: FROM_FILE
+         value: >-
+           ./source/$(params.SOURCE_GIT_CONTEXT_DIR)/target/$(params.APP_NAME)-1.0-SNAPSHOT-runner.jar
+       - name: NAMESPACE
+         value: $(params.NAMESPACE_DEV)
+       - name: BUILDCONFIG
+         value: $(params.APP_NAME)
+     runAfter:
+       - maven-build
+     taskRef:
+       kind: Task
+       name: s2i-binary
+     workspaces:
+       - name: source
+         workspace: app-source
+----
+===== Task 5: Tag Image
+Once the image has been successfully built it needs to be tagged with the label we created earlier in the pipeline. For this step we will use the openshift-client tekton task.
+
+:source-highlighter: coderay
+[source,shell]
+----
+tkn clustertask describe openshift-client
+----
+
+:source-highlighter: coderay
+[source,shell]
+----
+Add this section to your pipeline 
+   - name: tag-image-for-development
+     params:
+       - name: ARGS
+         value:
+           - tag
+           - '$(params.NAMESPACE_DEV)/$(params.APP_NAME):latest'
+           - >-
+             $(params.NAMESPACE_DEV)/$(params.APP_NAME):dev-$(tasks.generate-tag.results.image-tag)
+     runAfter:
+       - build-image
+     taskRef:
+       kind: ClusterTask
+       name: openshift-client
+----
+
+===== Task 6: Set Deployment Image
+Really, we should be skipping this step and directly updating the deployment.yaml in the GIT repo and then letting ArgoCD sync the deployment. But I’ve shown it this way to emphasize the role that ArgoCD is playing.
+
+We are going to use the same openshift-client tekton task to update the deployment config with the latest image. Now, doing this will force the ArgoCD Application to go out of sync because the deployment.yaml stored in our GIT repository will be out of sync with this latest change that we are going to make to the live deployment config. This step will not work if ArgoCD has been set-up to automatically sync. 
+
+:source-highlighter: coderay
+[source,shell]
+----
+   - name: set-image-in-dev
+     params:
+       - name: ARGS
+         value:
+           - set
+           - image
+           - deployment
+           - $(params.APP_NAME)
+           - >-
+             $(params.APP_NAME)=image-registry.openshift-image-registry.svc:5000/$(params.NAMESPACE_DEV)/$(params.APP_NAME):dev-$(tasks.generate-tag.results.image-tag)
+           - '-n $(params.NAMESPACE_DEV)'
+     runAfter:
+       - tag-image-for-development
+     taskRef:
+       kind: ClusterTask
+       name: openshift-client
+----
+
+===== Time to run and test the pipeline 
+You can either start the pipeline from the Openshift console or via the command line. When we defined the input parameters a default value was set for each one, I did this to simplify the start command. If you need to override any of the input params using the –param {param-name}={param-value}. 
+
+:source-highlighter: coderay
+[source,shell]
+----
+'tkn pipeline start {pipeline-name} \
+– param 
+--workspace name=app-source,claimName=workspace-pvc \
+--workspace name=maven-settings,emptyDir='
+----
+
+NOTE: *Useful DMN Related Material*: +
+https://developers.redhat.com/articles/2021/06/17/how-deliver-decision-services-kogito +
+https://learn-dmn-in-15-minutes.com/ +
+https://openshift.github.io/pipelines-docs/docs/0.10.5/index.html +
+https://hub.tekton.dev/
+
+

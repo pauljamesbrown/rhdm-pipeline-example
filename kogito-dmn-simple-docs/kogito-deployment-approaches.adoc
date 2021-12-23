@@ -1,0 +1,201 @@
+:data-uri:
+:toc:
+:sectanchors: true
+:sectlinks: true
+:sectnums: true
+:encoding: UTF-8
+:imagesdir: kogito-dmn-simple-docs/images/
+
+= Kogito Deployment Approaches
+
+== Deployment Options
+There are a number of options for building a Quarkus DMN rule. 
+
+* JVM Mode +
+** JVM Mode Using the Docker Image Extension +
+** JVM Mode Using the Quarkus Openshift Extension +
+
+* Native Mode
+** Native Mode Using the Docker Image Extension
+
+== Option 1 - JVM Mode Using the Docker Image Extension
+
+For this option you need to have a docker daemon running otherwise, you will see "Cannot connect to the Docker daemon" errors appearing in the logs.
+
+*TBC* Mention JIB
+
+. Add the container-image-docker extension to your application pom.xml file. 
+
+
+.. Running this command will add this dependency to your project POM.xml.
++
+[source]
+'./mvnw quarkus:add-extension -Dextensions="container-image-docker"'
+
+.. alternatively add this your POM.xml file
++
+[source] 
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-container-image-docker</artifactId>
+</dependency>
++
+The extension quarkus-container-image-docker is using the Docker binary and the generated Dockerfiles under src/main/docker in order to perform Docker builds.
+
+. Configure the following Quarkus properties in your application.properties file (src/main/resource/application.properties) +
+[source] 
+   - quarkus.openshift.build-strategy=docker
+   - quarkus.openshift.expose=true
+
+
+. To build a container image for your project *quarkus.container-image.build=true* needs to be set. 
+
+.. Option 1 - Add it to the command line +
+[source]
+  ./mvnw clean package -Dquarkus.container-image.build=true
++
+This command will create a docker image and install into you local docker repository, so if you type "docker images" you should see a new entry 
+... Use docker run --rm -p 8080:8080 \<image-name>:\<image-tag> to validate the image starts
+
+... To test use a curl command once the docker image is up and running
+[source]
+curl --location --request POST 'http://localhost:8080/simple-dmn-rule' \
+--header 'Content-Type: application/json' \
+--data-raw '{"infraData": {"alertName": 25,"alertLevel": "High"}}'
+
+
+.. Option 2 - Add it to the application properties file as per above.
+[source]
+quarkus.container-image.build=true
+ 
+== Option 2 - JVM Mode Using the Quarkus Openshift Extension
+
+For this option you need to be logged into an Openshift instance and have a namespace created.
+
+. Add the openshift extension to your application pom.xml file.
+[source]
+   ./mvnw quarkus:add-extension -Dextensions="openshift"
++
+Running this command will add this dependency to you POM.xml
+[source]
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-openshift</artifactId>
+</dependency>
++
+The OpenShift extension is a wrapper extension that brings together the kubernetes and container-image-s2i extensions with sensible defaults so that it’s easier for the user to get started with Quarkus on OpenShift.
+
+. Configure the following Quarkus properties in your application.properties file (src/main/resource/application.properties)
+[source]
+??? quarkus.openshift.build-strategy=docker
+quarkus.container-image.build=true
+   
+. Login into your Openshift cluster and select the relevant namespace using either the following CLI commands of the Openshift console: 
+    - oc new-project \<your-project-name>\
+    or
+    - oc project \<your-project-name>\
++ 
+TIP: If you want to get the Openshift console using the CLI command prompt you can use: *oc whoami --show-console*
+      
+. Run the following command to build you project 
+[source]
+ ./mvnw clean package
+
+. Once the build completes successfully check the image has been created in your Openshift cluster
+[source]
+oc get is
+
+. Now create a new-application using the image
+[source]
+oc new-app --name=simple-dmn <project>/<image-name>:<image-tag>
++  
+*Example:* 
+[source]
+oc new-app --name=simple-dmn default-route-openshift-image-registry.apps.sandbox.x8i5.p1.openshiftapps.com/dev-namespace/simple-dmn-rule:1.0.0-SNAPSHOT 
+  
+. Expose the route to be able to invoke the  create a new-application using the image
+[source]
+oc get svc
+oc expose svc/greeting
+oc get routes
+curl http://<route>/greeting
+
+== Option 3 - Native Mode Using the Docker Image Extension
+
+NOTE: A docker daemon needs to be installed and running for this option to work.
+
+. Add the following extension to the project:
+[source]
+./mvnw quarkus:add-extension -Dextensions="container-image-docker"
++
+This essential adds this dependency to the project POM
+[source]
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-container-image-docker</artifactId>
+</dependency>
+
+
+. The quarkus.container-image.build property needs to be set. The easiest option is to add it to application.properties file but you can if you like add it to the command line.
+[source]
+quarkus.container-image.build=true
+
+. Run this command to create the native build image. 
+[source]
+./mvnw clean package -Pnative -Dquarkus.native.container-build=true
++
+WARNING: - If you don’t set the *“-Dquarkus.native.container-build=true”* flag you will probably see the following error when you try to start the docker container. *“standard_init_linux.go:211: exec user process caused "exec format error”*.
+
+. Login to Openshift cluster
+[source]
+oc login ....
+
+. Create a new Openshift project
+[source]
+oc new-project [your-project-name]
+
+. Create a build config based on the src/main/docker/Dockerfile.native file:
+[source]
+cat src/main/docker/Dockerfile.native | oc new-build --name simple-dmn-docker-native --strategy=docker --dockerfile -
++
+This will create a new build config based on the Dockerfile. To verify this run this follow command:
+[source]
+oc get bc -n <your namespace>
+
+. Start the build which will upload the binary input
+[source]
+oc start-build simple-dmn-docker-native --from-dir .
+. Create a new-app from the build 
+[source]
+oc new-app <build-name>
+
+. Now, expose the service as a route so you can access from outside of the cluster
+[source]
+oc get svc
+oc expose svc <build-name>
+
+. Now, test your service
+
+##  Turn the Simple Rule into a Serverless Component.
+   
+NOTE: We need to use the image tag from the previous step.
+
+. Use the same namespace as used in the previous deployment steps.
+
+. Deploy your rule services container image as a serverless service 
+.. Use the previously created image from your development project: 
+.. Set the labels for: 
+... app.openshift.io/runtime=quarkus 
+... app.kubernetes.io/part-of=simple-dmn-rule-rule 
+   
+. Deploy the service as a no-cluster-local service which means that the service is not specified as private and is publicly available outside of the OpenShift cluster. (--no-cluster-local will make the service publicly available this is the - default).
++
+[source]  
+-- 
+kn service create simple-dmn-rule --image <project>/<image-name>:<image-tag> --label app.openshift.io/runtime=quarkus --label app.kubernetes.io/part-of=simple-dmn-rule --port 8080 --no-cluster-local --request cpu=100m, memory=256mi -n <your namespace>
+--
+. Retrieve the generated URL
+[source]
+kn route list -n <your namespace>
+
+. Check that everything is working ok
