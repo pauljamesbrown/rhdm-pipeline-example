@@ -10,7 +10,7 @@ metadata:
   name: simple-dmn-rule
   namespace: dmn-simple
 spec:
-  host: simple-dmn-rule-dmn-simple.apps.cluster-hlfs7.hlfs7.sandbox85.opentlc.com
+  host: <OPENSHIFT_CLUSTER_URL>
   port:
     targetPort: 8080-tcp
   to:
